@@ -18,6 +18,7 @@ from world import World
 from player import Player
 
 from utils.bar import get_bar
+from utils.save_world import save_world
 
 def repr_block(value):
     return  f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation()}{FRESET}"
@@ -55,19 +56,6 @@ def display(area: World, tick_state: 1|2|3|4, health, oxy, phys_active, phys_tic
     converted += f"║{repr_block(Stone)} ║{repr_block(Dirt)} ║{repr_block(Sand)} ║{repr_block(Grass)} ║{repr_block(Flower)} ║{repr_block(OakLog)} ║{repr_block(Leaf)} ║{repr_block(Water)} ║\n"
     converted += f"╚═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╝\n".replace("╦", "╩")
     print(converted)
-
-def save_world(world: World):
-    print("world = [")
-    for row in world.world:
-        print("[", end="")
-        for block in row:
-            try:
-                print(block.__name__+",", end="")
-            except AttributeError:
-                print("player,", end="")
-        print("],")
-    print("]")
-    print(f"player_xy = [{world.player.x}, {world.player.y}]")
 
 tty.setcbreak(sys.stdin.fileno())
 
