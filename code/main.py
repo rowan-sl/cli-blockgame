@@ -91,7 +91,6 @@ while True:
     #tps
     sleep(1/10)
     if tick_st.increment() == "rollover":
-        clear_screen()
         if do_phys:
             phys_tk_st.increment()
             wrld.do_pysics()
@@ -132,5 +131,6 @@ while True:
             do_phys = not do_phys
         case _:
             pass
+    clear_screen()
     display(wrld, tick_st.value(), health, oxygen, do_phys, phys_tk_st.value())
     

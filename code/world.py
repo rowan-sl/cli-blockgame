@@ -23,16 +23,16 @@ class World:
         new_x = self.player.x + dx
         new_y = self.player.y + dy
         if new_x > self.max_x:
-            print("cant move farther")
+            # print("cant move farther")
             return
         if new_x < self.min_x:
-            print("cant move farther")
+            # print("cant move farther")
             return
         if new_y > self.max_y:
-            print("cant move farther")
+            # print("cant move farther")
             return
         if new_y < self.min_y:
-            print("cant move farther")
+            # print("cant move farther")
             return
         if (
             self.get_from_world(self.player.x + dx, self.player.y + dy).replaceable
@@ -40,7 +40,7 @@ class World:
         ) and (
             not self.get_from_world(self.player.x + dx, self.player.y + dy).uncrossable
         ):
-            print("moving")
+            # print("moving")
             # replace current loacation with prv block that was there
             self.set_in_world(self.player.x, self.player.y, self.player.block_at_pl)
             # update player vars
@@ -56,7 +56,8 @@ class World:
             # set player to new location
             self.set_in_world(self.player.x, self.player.y, self.player)
         else:
-            print("non-replaceable block at new location!")
+            pass
+            # print("non-replaceable block at new location!")
 
     def do_pysics(self):
         new = [[Air] * len(self.world[0])] * len(self.world)
@@ -84,7 +85,7 @@ class World:
                             if block_below_xy == block_at_xy:
                                 new = self.set_in_world(x, y, block_at_xy, new)
                             else:
-                                print("e")
+                                # print("e")
                                 new = self.set_in_world(x, y - 1, block_at_xy, new)
                     else:
                         new = self.set_in_world(x, y, block_at_xy, new)
