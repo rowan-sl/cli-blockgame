@@ -17,24 +17,7 @@ FRESET = fmt.MRESET
 from world import World
 from player import Player
 
-BAR_STATES = [i for i in " ▄█"]
-
-def pad_right(text, target_len, char):
-    text_len = len(text)
-    needed_len = target_len-text_len
-    if needed_len > 0:
-        return text+char*needed_len
-    else:
-        return text
-
-def get_bar(value):
-    full_chunks = int(value/2)
-    last_part_i = value%2
-    if last_part_i != 0:
-        last_part = BAR_STATES[last_part_i]
-    else:
-        last_part = ""
-    return pad_right(BAR_STATES[2]*full_chunks+last_part, 10, " ")
+from utils.bar import get_bar
 
 def repr_block(value):
     return  f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation()}{FRESET}"
