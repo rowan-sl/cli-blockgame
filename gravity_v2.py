@@ -36,7 +36,7 @@ def display(area):
         for _ in range(1):
             for x, value in enumerate(line):
                 value: BaseBlock
-                converted += f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation*2}{FRESET}"
+                converted += f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation()}{FRESET}"
             converted += "\n"
     print(converted)
 
