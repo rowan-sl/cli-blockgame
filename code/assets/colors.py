@@ -64,3 +64,4 @@ class fmt:
     RINVERSE = '\033[27m'
     RINVISIBLE = '\033[28m'
     RSTRIKETHROUGH = '\033[29m'
+FRESET = fmt.MRESET

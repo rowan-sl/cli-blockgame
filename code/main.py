@@ -1,18 +1,16 @@
 import tty
 import sys
-from time import sleep
-import threading
 import queue
+import threading
+from time import sleep
+
 from utils.filepath import main_path
-from picharsso.utils import clear_screen
 sys.path.append(main_path)
 
 from assets.blocks.blocks import *
 
 from assets.templates.base.block import BaseBlock
-from assets.colors import fmt
-
-FRESET = fmt.MRESET
+from assets.colors import fmt, FRESET
 
 from world import World
 from player import Player
