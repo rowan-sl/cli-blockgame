@@ -30,9 +30,9 @@ def pad_right(text, target_len, char):
     else:
         return text
 
-def get_health_bar(health):
-    full_chunks = int(health/2)
-    last_part_i = health%2
+def get_bar(value):
+    full_chunks = int(value/2)
+    last_part_i = value%2
     if last_part_i != 0:
         last_part = BAR_STATES[last_part_i]
     else:
@@ -42,7 +42,7 @@ def get_health_bar(health):
 def repr_block(value):
     return  f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation()}{FRESET}"
 
-def display(area: World, tick_state: 1|2|3|4, health):
+def display(area: World, tick_state: 1|2|3|4, health, oxy):
     tick_states = {1: "🮪", 2: "🮫", 3: "🮭", 4: "🮬"}
     #convert 0 and 1 to block and space
     converted = ""
@@ -55,9 +55,15 @@ def display(area: World, tick_state: 1|2|3|4, health):
                     player_repr = area.player.get_as_char()
                     converted += f"{fmt.bgrgb(*player_repr[1])}{fmt.fgrgb(0, 0, 0)}{player_repr[0]}{FRESET}"
             converted += "\n"
+    #tick display
     converted += f"{tick_states[tick_state]}  "
+    #health
     converted += f"{fmt.FGRED}🮭🮬{FRESET} "
-    converted += f"{fmt.fgrgb(189,29,11)}{fmt.bgrgb(94,14,5)}{get_health_bar(health)}{FRESET}"
+    converted += f"{fmt.fgrgb(189,29,11)}{fmt.bgrgb(94,14,5)}{get_bar(health)}{FRESET}  "
+    #oxygen bar
+    converted += f"{fmt.FGCYAN}O2{FRESET} "
+    converted += f"{fmt.fgrgb(179,242,255)}{fmt.bgrgb(0,51,102)}{get_bar(oxy)}{FRESET}  "
+    #item UI
     converted += "\n"
     converted += f"╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗\n"
     converted += f"║🯱  ║🯲  ║🯳  ║🯴  ║🯵  ║🯶  ║🯷  ║🯸  ║🯹  ║\n"
@@ -104,6 +110,10 @@ health = 20
 max_health = 20
 min_health = 0
 
+oxygen = 20
+max_oxy = 20
+min_oxy = 0
+
 while True:
     #tps
     sleep(1/10)
@@ -141,8 +151,14 @@ while True:
         case "o":
             if health < max_health:
                 health += 1
+        case "k":
+            if oxygen > min_oxy:
+                oxygen -= 1
+        case "l":
+            if oxygen < max_oxy:
+                oxygen += 1
         case _:
             pass
     if not DEBUGCLEAR: print("\x1b[2J")#clear_screen()
-    display(wrld, tick_state, health)
+    display(wrld, tick_state, health, oxygen)
     
