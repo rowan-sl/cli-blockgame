@@ -1,3 +1,4 @@
+#!/usr/bin/python3.10
 import tty
 import sys
 import queue
