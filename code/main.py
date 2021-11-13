@@ -18,10 +18,9 @@ from player import Player
 
 from utils.bar import get_bar
 from utils.save_world import save_world
-
 from utils.counters import Counter, RolloverCounter
-
 from utils.clear_scr import clear_screen
+from utils.sliding_window import get_window_into_area
 
 def repr_block(value):
     return  f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation()}{FRESET}"
@@ -30,15 +29,15 @@ def display(area: World, tick_state: 1|2|3|4, health: Counter, oxy: Counter, phy
     tick_states = {1: "🮪", 2: "🮫", 3: "🮭", 4: "🮬"}
     #convert 0 and 1 to block and space
     converted = ""
-    for y, line in enumerate(area.world):
-        for _ in range(1):
-            for x, value in enumerate(line):
-                if value.is_block:
-                    converted += f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation()}{FRESET}"
-                else:
-                    player_repr = area.player.get_as_char()
-                    converted += f"{fmt.bgrgb(*player_repr[1])}{fmt.fgrgb(0, 0, 0)}{player_repr[0]}{FRESET}"
-            converted += "\n"
+    selection = get_window_into_area(area.world, area.player.y-10, area.player.x-10, area.player.y+10, area.player.x+10)
+    for y, line in enumerate(selection):
+        for x, value in enumerate(line):
+            if value.is_block:
+                converted += f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation()}{FRESET}"
+            else:
+                player_repr = area.player.get_as_char()
+                converted += f"{fmt.bgrgb(*player_repr[1])}{fmt.fgrgb(0, 0, 0)}{player_repr[0]}{FRESET}"
+        converted += "\n"
     #tick display
     converted += f"TK{tick_states[tick_state]}  "
     #physics tick display
@@ -56,7 +55,7 @@ def display(area: World, tick_state: 1|2|3|4, health: Counter, oxy: Counter, phy
     converted += "\n"
     converted += f"╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗\n"
     converted += f"║🯱  ║🯲  ║🯳  ║🯴  ║🯵  ║🯶  ║🯷  ║🯸  ║🯹  ║\n"
-    converted += f"║{repr_block(Stone)} ║{repr_block(Dirt)} ║{repr_block(Sand)} ║{repr_block(Grass)} ║{repr_block(Flower)} ║{repr_block(OakLog)} ║{repr_block(Leaf)} ║{repr_block(Water)} ║\n"
+    converted += f"║{repr_block(Stone)} ║{repr_block(Dirt)} ║{repr_block(Sand)} ║{repr_block(Grass)} ║{repr_block(Flower)} ║{repr_block(OakLog)} ║{repr_block(Leaf)} ║{repr_block(Water)} ║   ║\n"
     converted += f"╚═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╝\n".replace("╦", "╩")
     print(converted)
 
@@ -70,7 +69,7 @@ def input_getter(input_queue: queue.Queue):
         except queue.Full:
             pass
 
-in_queue = queue.Queue(maxsize=3)
+in_queue = queue.Queue(maxsize=1)
 input_reader_thread = threading.Thread(target=input_getter, args=[in_queue], daemon=True)
 input_reader_thread.start()
 
@@ -92,7 +91,6 @@ while True:
     #tps
     sleep(1/10)
     if tick_st.increment() == "rollover":
-        clear_screen()
         if do_phys:
             phys_tk_st.increment()
             wrld.do_pysics()
@@ -133,5 +131,6 @@ while True:
             do_phys = not do_phys
         case _:
             pass
+    clear_screen()
     display(wrld, tick_st.value(), health, oxygen, do_phys, phys_tk_st.value())
     
