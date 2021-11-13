@@ -9,3 +9,4 @@ class Water(BaseBlock):
         return "🮐"*2
     gravity_affects = True
     replaceable = True
+    self_replaceable = False

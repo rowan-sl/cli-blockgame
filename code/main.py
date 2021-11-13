@@ -17,9 +17,6 @@ FRESET = fmt.MRESET
 from world import World
 from player import Player
 
-#set this to true to clear before all the tick calcluations happen, this causes flashing, but also shows print statements that happen while tick is being executed
-DEBUGCLEAR = False
-
 BAR_STATES = [i for i in " ▄█"]
 
 def pad_right(text, target_len, char):
@@ -42,7 +39,7 @@ def get_bar(value):
 def repr_block(value):
     return  f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation()}{FRESET}"
 
-def display(area: World, tick_state: 1|2|3|4, health, oxy):
+def display(area: World, tick_state: 1|2|3|4, health, oxy, phys_active, phys_tick_state):
     tick_states = {1: "🮪", 2: "🮫", 3: "🮭", 4: "🮬"}
     #convert 0 and 1 to block and space
     converted = ""
@@ -56,13 +53,18 @@ def display(area: World, tick_state: 1|2|3|4, health, oxy):
                     converted += f"{fmt.bgrgb(*player_repr[1])}{fmt.fgrgb(0, 0, 0)}{player_repr[0]}{FRESET}"
             converted += "\n"
     #tick display
-    converted += f"{tick_states[tick_state]}  "
+    converted += f"TK{tick_states[tick_state]}  "
+    #physics tick display
+    converted += f"PHYSTK{tick_states[phys_tick_state]}  "
     #health
     converted += f"{fmt.FGRED}🮭🮬{FRESET} "
     converted += f"{fmt.fgrgb(189,29,11)}{fmt.bgrgb(94,14,5)}{get_bar(health)}{FRESET}  "
     #oxygen bar
     converted += f"{fmt.FGCYAN}O2{FRESET} "
     converted += f"{fmt.fgrgb(179,242,255)}{fmt.bgrgb(0,51,102)}{get_bar(oxy)}{FRESET}  "
+    #debug stuff
+    converted += f"PHYS:{['on' if phys_active else 'off'][0]} "
+    converted += f"NOCL:{['on' if area.noclip else 'off'][0]} "
     #item UI
     converted += "\n"
     converted += f"╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗\n"
@@ -105,6 +107,7 @@ from worlds.custom import init_world
 wrld = World(init_world)
 
 tick_state = 1
+phys_tick_state = 1
 
 health = 20
 max_health = 20
@@ -114,6 +117,8 @@ oxygen = 20
 max_oxy = 20
 min_oxy = 0
 
+do_phys = False
+
 while True:
     #tps
     sleep(1/10)
@@ -121,7 +126,13 @@ while True:
         tick_state += 1
     else:
         tick_state = 1
-    if DEBUGCLEAR: print("\x1b[2J")#clear_screen()
+        print("\x1b[2J")
+        if do_phys:
+            if phys_tick_state < 4:
+                phys_tick_state += 1
+            else:
+                phys_tick_state = 1
+            wrld.do_pysics()
     #handle input
     text = ""
     try:
@@ -143,6 +154,8 @@ while True:
             wrld.place_at_player(int(text))
         case "f":
             save_world(wrld)
+            print("please press ctrl+C")
+            sleep(10)
         case "x":
             wrld.place_air_at_player()
         case "i":
@@ -157,8 +170,9 @@ while True:
         case "l":
             if oxygen < max_oxy:
                 oxygen += 1
+        case "p":
+            do_phys = not do_phys
         case _:
             pass
-    if not DEBUGCLEAR: print("\x1b[2J")#clear_screen()
-    display(wrld, tick_state, health, oxygen)
+    display(wrld, tick_state, health, oxygen, do_phys, phys_tick_state)
     

@@ -51,6 +51,38 @@ class World:
         else:
             print("non-replaceable block at new location!")
     
+    def do_pysics(self):
+        new = [[Air]*len(self.world[0])]*len(self.world)
+        for y in (range(len(new))):
+            at_min = y == 0
+            for x in range(len(new[0])):
+                block_at_xy = self.get_from_world(x, y)
+                block_below = at_min
+                if not block_below:
+                    if not self.get_from_world(x, y-1, new).replaceable:
+                        #there is a block below us, and its not replaceable
+                        block_below = True
+                    else:
+                        #no block below
+                        block_below = False
+                if block_below:
+                    new = self.set_in_world(x, y, block_at_xy, new)
+                else:
+                    if block_at_xy.gravity_affects:
+                        #block is going to be replaced
+                        block_below_xy = self.get_from_world(x, y-1, new)
+                        if block_below_xy.self_replaceable:
+                            new = self.set_in_world(x, y-1, block_at_xy, new)
+                        else:
+                            if block_below_xy == block_at_xy:
+                                new = self.set_in_world(x, y, block_at_xy, new)
+                            else:
+                                print("e")
+                                new = self.set_in_world(x, y-1, block_at_xy, new)
+                    else:
+                        new = self.set_in_world(x, y, block_at_xy, new)
+        self.world = new
+    
     def place_at_player(self, block:int):
         if self.noclip:
             new_block = None
@@ -78,16 +110,27 @@ class World:
     def place_air_at_player(self):
         self.player.block_at_pl = Air
     
-    def get_from_world(self, x, y) -> BaseBlock:
-        wrld_copy = list(reversed(self.world.copy()))
-        return wrld_copy[y][x]
+    def get_from_world(self, x, y, world=None) -> BaseBlock:
+        if world is None:
+            wrld_copy = list(reversed(self.world.copy()))
+            return wrld_copy[y][x]
+        else:
+            wrld_copy = list(reversed(world))
+            return wrld_copy[y][x]
 
-    def set_in_world(self, x, y, val):
-        wrld = list(reversed(self.world.copy()))
-        line = wrld[y].copy()
-        line[x] = val
-        wrld[y] = line
-        self.world = list(reversed(wrld))
+    def set_in_world(self, x, y, val, world=None):
+        if world is None:
+            wrld = list(reversed(self.world.copy()))
+            line = wrld[y].copy()
+            line[x] = val
+            wrld[y] = line
+            self.world = list(reversed(wrld))
+        else:
+            wrld = list(reversed(world))
+            line = wrld[y].copy()
+            line[x] = val
+            wrld[y] = line
+            return list(reversed(wrld))
     
     def update_noclip(self, noclip: bool) -> None:
         self.noclip = noclip

@@ -8,6 +8,7 @@ class BaseBlock:
     background: Tuple[int, int, int]
     gravity_affects: bool
     replaceable: bool = False
+    self_replaceable: bool = False
     is_block: bool = True
     
     def char_representation(self) -> str:
