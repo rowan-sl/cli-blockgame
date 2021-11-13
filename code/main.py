@@ -18,6 +18,8 @@ from player import Player
 from utils.bar import get_bar
 from utils.save_world import save_world
 
+from utils.counters import Counter, RolloverCounter
+
 def repr_block(value):
     return  f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation()}{FRESET}"
 
