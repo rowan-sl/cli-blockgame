@@ -1,11 +1,12 @@
 from assets.colors import fmt
 from assets.templates.base.block import BaseBlock
+import random
 
-class Air(BaseBlock):
-    foreground = (255, 255, 255)
-    background = (255, 255, 255)
+class Flower(BaseBlock):
+    foreground = (25,77,0)
+    background = (244,255,244)
     @staticmethod
     def char_representation():
-        return "█"*2
+        return " ❀"
     gravity_affects = False
     replaceable = True

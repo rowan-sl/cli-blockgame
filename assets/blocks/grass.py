@@ -4,4 +4,6 @@ from assets.templates.immovable_block import ImmovableBlock
 class Grass(ImmovableBlock):
     foreground = (80,59,28)
     background = (46,77,5)
-    char_representation = "▆"
+    @staticmethod
+    def char_representation():
+        return "▆"*2
