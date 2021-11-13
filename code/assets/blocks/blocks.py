@@ -6,3 +6,4 @@ from assets.blocks.grass import Grass
 from assets.blocks.flower import Flower
 from assets.blocks.tree import Leaf, OakLog
 from assets.blocks.liquid import Water
+from assets.blocks.worldborder import WorldBorder, Void

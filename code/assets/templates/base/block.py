@@ -4,6 +4,7 @@ from typing import (
 
 class BaseBlock:
     "base of the block hierarchy, all blocks should subclass this"
+    uncrossable = False
     foreground: Tuple[int, int, int]
     background: Tuple[int, int, int]
     gravity_affects: bool
@@ -11,5 +12,6 @@ class BaseBlock:
     self_replaceable: bool = False
     is_block: bool = True
     
-    def char_representation(self) -> str:
+    @staticmethod
+    def char_representation() -> str:
         pass
