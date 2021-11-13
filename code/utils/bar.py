@@ -1,4 +1,4 @@
-from pad_right import pad_right
+from utils.pad_right import pad_right
 
 BAR_STATES = [i for i in " ▄█"]
 

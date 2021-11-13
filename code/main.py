@@ -20,10 +20,12 @@ from utils.save_world import save_world
 
 from utils.counters import Counter, RolloverCounter
 
+from utils.clear_scr import clear_screen
+
 def repr_block(value):
     return  f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation()}{FRESET}"
 
-def display(area: World, tick_state: 1|2|3|4, health, oxy, phys_active, phys_tick_state):
+def display(area: World, tick_state: 1|2|3|4, health: Counter, oxy: Counter, phys_active, phys_tick_state: 1|2|3|4):
     tick_states = {1: "🮪", 2: "🮫", 3: "🮭", 4: "🮬"}
     #convert 0 and 1 to block and space
     converted = ""
@@ -42,10 +44,10 @@ def display(area: World, tick_state: 1|2|3|4, health, oxy, phys_active, phys_tic
     converted += f"PHYSTK{tick_states[phys_tick_state]}  "
     #health
     converted += f"{fmt.FGRED}🮭🮬{FRESET} "
-    converted += f"{fmt.fgrgb(189,29,11)}{fmt.bgrgb(94,14,5)}{get_bar(health)}{FRESET}  "
+    converted += f"{fmt.fgrgb(189,29,11)}{fmt.bgrgb(94,14,5)}{get_bar(health.value())}{FRESET}  "
     #oxygen bar
     converted += f"{fmt.FGCYAN}O2{FRESET} "
-    converted += f"{fmt.fgrgb(179,242,255)}{fmt.bgrgb(0,51,102)}{get_bar(oxy)}{FRESET}  "
+    converted += f"{fmt.fgrgb(179,242,255)}{fmt.bgrgb(0,51,102)}{get_bar(oxy.value())}{FRESET}  "
     #debug stuff
     converted += f"PHYS:{['on' if phys_active else 'off'][0]} "
     converted += f"NOCL:{['on' if area.noclip else 'off'][0]} "
@@ -77,32 +79,21 @@ from worlds.custom import init_world
 
 wrld = World(init_world)
 
-tick_state = 1
-phys_tick_state = 1
+tick_st = RolloverCounter(4, 1, 1)
+phys_tk_st = RolloverCounter(4, 1, 1)
 
-health = 20
-max_health = 20
-min_health = 0
-
-oxygen = 20
-max_oxy = 20
-min_oxy = 0
+health = Counter(20, 0, 20)
+oxygen = Counter(20, 0, 20)
 
 do_phys = False
 
 while True:
     #tps
     sleep(1/10)
-    if tick_state < 4:
-        tick_state += 1
-    else:
-        tick_state = 1
-        print("\x1b[2J")
+    if tick_st.increment() == "rollover":
+        clear_screen()
         if do_phys:
-            if phys_tick_state < 4:
-                phys_tick_state += 1
-            else:
-                phys_tick_state = 1
+            phys_tk_st.increment()
             wrld.do_pysics()
     #handle input
     text = ""
@@ -130,20 +121,16 @@ while True:
         case "x":
             wrld.place_air_at_player()
         case "i":
-            if health > min_health:
-                health -= 1
+            health.decrement()
         case "o":
-            if health < max_health:
-                health += 1
+            health.increment()
         case "k":
-            if oxygen > min_oxy:
-                oxygen -= 1
+            oxygen.decrement()
         case "l":
-            if oxygen < max_oxy:
-                oxygen += 1
+            oxygen.increment()
         case "p":
             do_phys = not do_phys
         case _:
             pass
-    display(wrld, tick_state, health, oxygen, do_phys, phys_tick_state)
+    display(wrld, tick_st.value(), health, oxygen, do_phys, phys_tk_st.value())
     

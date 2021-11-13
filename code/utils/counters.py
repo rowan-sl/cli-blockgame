@@ -4,14 +4,14 @@ class Counter:
         self.min = min
         self.val = start
 
-    def increment(self, step: int = 1) -> int | False:
+    def increment(self, step: int = 1) -> int | bool:
         if self.val + step > self.max:
             return False
         else:
             self.val += step
             return self.val
 
-    def decrement(self, step: int = 1) -> int | False:
+    def decrement(self, step: int = 1) -> int | bool:
         if self.val - step < self.min:
             return False
         else:
@@ -28,9 +28,10 @@ class RolloverCounter:
         self.min = min
         self.val = start
 
-    def increment(self, step: int = 1) -> int:
+    def increment(self, step: int = 1) -> int | str:
         if self.val + step > self.max:
             self.val = self.min
+            return "rollover"
         else:
             self.val += step
             return self.val
