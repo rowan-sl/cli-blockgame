@@ -6,9 +6,16 @@ import queue
 import threading
 from time import sleep
 
-from utils.filepath import main_path
+from utils.filepath import main_path, project_path
 
 sys.path.append(main_path)
+sys.path.append(project_path)
+
+##config
+from config.conf import (
+    PHYS_STATE_AT_START,
+    NOCLIP_ON_START
+)
 
 from assets.blocks.blocks import *
 
@@ -121,6 +128,7 @@ from worlds.custom import init_world
 # end world config
 
 wrld = World(init_world)
+wrld.update_noclip(NOCLIP_ON_START)
 
 tick_st = RolloverCounter(4, 1, 1)
 phys_tk_st = RolloverCounter(4, 1, 1)
@@ -128,7 +136,7 @@ phys_tk_st = RolloverCounter(4, 1, 1)
 health = Counter(20, 0, 20)
 oxygen = Counter(20, 0, 20)
 
-do_phys = False
+do_phys = PHYS_STATE_AT_START
 
 tty.setcbreak(sys.stdin.fileno())
 
@@ -165,10 +173,8 @@ while True:
             since_last_move = time.time()
         case "a":
             wrld.move_player(-1, 0)
-            since_last_move = time.time()
         case "d":
             wrld.move_player(1, 0)
-            since_last_move = time.time()
         case "n":
             wrld.update_noclip(not wrld.noclip)
         case text if text in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:

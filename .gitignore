@@ -1,3 +1,4 @@
 .vscode
 archive
+config/conf.py
 **/__pycache__
