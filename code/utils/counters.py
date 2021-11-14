@@ -21,6 +21,7 @@ class Counter:
     def value(self) -> int:
         return self.val
 
+
 class RolloverCounter:
     def __init__(self, max: int, min: int, start: int) -> None:
         "counter, but rolls over to min when it reaches max"

@@ -6,6 +6,7 @@ import threading
 from time import sleep
 
 from utils.filepath import main_path
+
 sys.path.append(main_path)
 
 from assets.blocks.blocks import *
@@ -22,14 +23,29 @@ from utils.counters import Counter, RolloverCounter
 from utils.clear_scr import clear_screen
 from utils.sliding_window import get_window_into_area
 
-def repr_block(value: BaseBlock):
-    return  f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.one_char_representation()}{FRESET}"
 
-def new_display(area: World, tick_state: 1|2|3|4, health: Counter, oxy: Counter, phys_active, phys_tick_state: 1|2|3|4):
+def repr_block(value: BaseBlock):
+    return f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.one_char_representation()}{FRESET}"
+
+
+def new_display(
+    area: World,
+    tick_state: 1 | 2 | 3 | 4,
+    health: Counter,
+    oxy: Counter,
+    phys_active,
+    phys_tick_state: 1 | 2 | 3 | 4,
+):
     tick_states = {1: "🮪", 2: "🮫", 3: "🮭", 4: "🮬"}
     ui = ""
-    selection = get_window_into_area(area.world, area.player.y-10, area.player.x-10, area.player.y+10, area.player.x+10)
-    #preconvert selection into chars and rgb data
+    selection = get_window_into_area(
+        area.world,
+        area.player.y - 10,
+        area.player.x - 10,
+        area.player.y + 10,
+        area.player.x + 10,
+    )
+    # preconvert selection into chars and rgb data
     converted_selection = []
     for row in selection:
         cvrt_row1 = []
@@ -47,33 +63,38 @@ def new_display(area: World, tick_state: 1|2|3|4, health: Counter, oxy: Counter,
             cvrt_row2.append(chars_dat[7])
         converted_selection.append(cvrt_row1)
         converted_selection.append(cvrt_row2)
-    #actualy convert char data into the ui text
+    # actualy convert char data into the ui text
     for y, line in enumerate(converted_selection):
         for x, value in enumerate(line):
             ui += f"{fmt.bgrgb(*value[1])}{fmt.fgrgb(*value[0])}{value[2]}{FRESET}"
         ui += "\n"
-    #old ui
-    #tick display
+    # old ui
+    # tick display
     ui += f"TK{tick_states[tick_state]}  "
-    #physics tick display
+    # physics tick display
     ui += f"PHYSTK{tick_states[phys_tick_state]}  "
-    #health
+    # health
     ui += f"{fmt.FGRED}🮭🮬{FRESET} "
-    ui += f"{fmt.fgrgb(189,29,11)}{fmt.bgrgb(94,14,5)}{get_bar(health.value())}{FRESET}  "
-    #oxygen bar
+    ui += (
+        f"{fmt.fgrgb(189,29,11)}{fmt.bgrgb(94,14,5)}{get_bar(health.value())}{FRESET}  "
+    )
+    # oxygen bar
     ui += f"{fmt.FGCYAN}O2{FRESET} "
-    ui += f"{fmt.fgrgb(179,242,255)}{fmt.bgrgb(0,51,102)}{get_bar(oxy.value())}{FRESET}  "
-    #debug stuff
+    ui += (
+        f"{fmt.fgrgb(179,242,255)}{fmt.bgrgb(0,51,102)}{get_bar(oxy.value())}{FRESET}  "
+    )
+    # debug stuff
     ui += f"PHYS:{['on' if phys_active else 'off'][0]} "
     ui += f"NOCL:{['on' if area.noclip else 'off'][0]} "
-    #item UI
+    # item UI
     ui += "\n"
     ui += f"╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗\n"
     ui += f"║🯱  ║🯲  ║🯳  ║🯴  ║🯵  ║🯶  ║🯷  ║🯸  ║🯹  ║\n"
     ui += f"║{repr_block(Stone)} ║{repr_block(Dirt)} ║{repr_block(Sand)} ║{repr_block(Grass)} ║{repr_block(Flower)} ║{repr_block(OakLog)} ║{repr_block(Leaf)} ║{repr_block(Water)} ║   ║\n"
     ui += f"╚═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╝\n".replace("╦", "╩")
-    
+
     print(ui)
+
 
 def input_getter(input_queue: queue.Queue):
     while True:
@@ -83,13 +104,17 @@ def input_getter(input_queue: queue.Queue):
         except queue.Full:
             pass
 
+
 in_queue = queue.Queue(maxsize=1)
-input_reader_thread = threading.Thread(target=input_getter, args=[in_queue], daemon=True)
+input_reader_thread = threading.Thread(
+    target=input_getter, args=[in_queue], daemon=True
+)
 input_reader_thread.start()
 
-#world config
+# world config
 from worlds.custom import init_world
-#end world config
+
+# end world config
 
 wrld = World(init_world)
 
@@ -108,14 +133,14 @@ tty.setcbreak(sys.stdin.fileno())
 
 clear = False
 while True:
-    #tps
-    sleep(1/10)
+    # tps
+    sleep(1 / 10)
     if tick_st.increment() == "rollover":
         clear = True
         if do_phys:
             phys_tk_st.increment()
             wrld.do_pysics()
-    #handle input
+    # handle input
     text = ""
     try:
         text = in_queue.get_nowait()
@@ -156,4 +181,3 @@ while True:
         clear_screen()
         clear = False
     new_display(wrld, tick_st.value(), health, oxygen, do_phys, phys_tk_st.value())
-    

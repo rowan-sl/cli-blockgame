@@ -1,14 +1,17 @@
 from typing import List, TypeVar
 
-T = TypeVar('T')
+T = TypeVar("T")
 
-def get_window_into_area(area: List[List[T]], bottom:int, left:int, top:int, right:int) -> List[List[T]]:
+
+def get_window_into_area(
+    area: List[List[T]], bottom: int, left: int, top: int, right: int
+) -> List[List[T]]:
     new_area = []
-    max_x = len(area[0])-1
-    max_y = len(area)-1
-    
-    width_x = right-left
-    width_y = top-bottom
+    max_x = len(area[0]) - 1
+    max_y = len(area) - 1
+
+    width_x = right - left
+    width_y = top - bottom
 
     if bottom < 0:
         bottom = 0
@@ -22,7 +25,7 @@ def get_window_into_area(area: List[List[T]], bottom:int, left:int, top:int, rig
     if right > max_x:
         right = max_x
         left = max_x - width_x
-    
+
     assert bottom >= 0
     assert left >= 0
     assert top <= max_y
@@ -31,6 +34,6 @@ def get_window_into_area(area: List[List[T]], bottom:int, left:int, top:int, rig
     for y, line in enumerate(reversed(area)):
         if y <= top:
             if y >= bottom:
-                new_area.append(line[left:right+1])
+                new_area.append(line[left : right + 1])
 
     return list(reversed(new_area))
