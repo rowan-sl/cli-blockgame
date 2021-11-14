@@ -7,7 +7,8 @@ class Stone(ImmovableBlock):
     @staticmethod
     def char_representation():
         return [
-            ((59,58,56),(66,66,66), "▒"), ((59,58,56),(66,66,66), "▒"),
-            ((59,58,56),(66,66,66), "▒"), ((59,58,56),(66,66,66), "▒"),
-        ]
-        # return "▒"*2
+            ((59,58,56),(66,66,66), "▒"),
+        ]*8
+    @staticmethod
+    def one_char_representation():
+        return "▒"*2

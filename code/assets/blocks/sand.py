@@ -7,7 +7,8 @@ class Sand(MoveableBlock):
     @staticmethod
     def char_representation():
         return [
-            ((194,178,128),(184,126,50), "░"), ((194,178,128),(184,126,50), "░"),
-            ((194,178,128),(184,126,50), "░"), ((194,178,128),(184,126,50), "░"),
-        ]
-        # return "░"*2
+            ((194,178,128),(184,126,50), "░"),
+        ]*8
+    @staticmethod
+    def one_char_representation():
+        return "░"*2

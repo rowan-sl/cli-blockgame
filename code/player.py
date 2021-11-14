@@ -21,3 +21,9 @@ class Player(BaseBlock):
             return ("🯇 ", self.block_at_pl.background)
         if self.direction == 1:
             return ("🯈 ", self.block_at_pl.background)
+    
+    def char_representation(self):
+        chrepr = self.block_at_pl.char_representation()
+        new_at_6 = ((0,0,0), chrepr[6][1], "🯅")
+        chrepr[6] = new_at_6
+        return chrepr
