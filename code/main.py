@@ -25,40 +25,6 @@ from utils.sliding_window import get_window_into_area
 def repr_block(value: BaseBlock):
     return  f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.one_char_representation()}{FRESET}"
 
-def display(area: World, tick_state: 1|2|3|4, health: Counter, oxy: Counter, phys_active, phys_tick_state: 1|2|3|4):
-    tick_states = {1: "🮪", 2: "🮫", 3: "🮭", 4: "🮬"}
-    #convert 0 and 1 to block and space
-    converted = ""
-    selection = get_window_into_area(area.world, area.player.y-10, area.player.x-10, area.player.y+10, area.player.x+10)
-    for y, line in enumerate(selection):
-        for x, value in enumerate(line):
-            if value.is_block:
-                converted += f"{fmt.bgrgb(*value.background)}{fmt.fgrgb(*value.foreground)}{value.char_representation()}{FRESET}"
-            else:
-                player_repr = area.player.get_as_char()
-                converted += f"{fmt.bgrgb(*player_repr[1])}{fmt.fgrgb(0, 0, 0)}{player_repr[0]}{FRESET}"
-        converted += "\n"
-    #tick display
-    converted += f"TK{tick_states[tick_state]}  "
-    #physics tick display
-    converted += f"PHYSTK{tick_states[phys_tick_state]}  "
-    #health
-    converted += f"{fmt.FGRED}🮭🮬{FRESET} "
-    converted += f"{fmt.fgrgb(189,29,11)}{fmt.bgrgb(94,14,5)}{get_bar(health.value())}{FRESET}  "
-    #oxygen bar
-    converted += f"{fmt.FGCYAN}O2{FRESET} "
-    converted += f"{fmt.fgrgb(179,242,255)}{fmt.bgrgb(0,51,102)}{get_bar(oxy.value())}{FRESET}  "
-    #debug stuff
-    converted += f"PHYS:{['on' if phys_active else 'off'][0]} "
-    converted += f"NOCL:{['on' if area.noclip else 'off'][0]} "
-    #item UI
-    converted += "\n"
-    converted += f"╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗\n"
-    converted += f"║🯱  ║🯲  ║🯳  ║🯴  ║🯵  ║🯶  ║🯷  ║🯸  ║🯹  ║\n"
-    converted += f"║{repr_block(Stone)} ║{repr_block(Dirt)} ║{repr_block(Sand)} ║{repr_block(Grass)} ║{repr_block(Flower)} ║{repr_block(OakLog)} ║{repr_block(Leaf)} ║{repr_block(Water)} ║   ║\n"
-    converted += f"╚═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╝\n".replace("╦", "╩")
-    print(converted)
-
 def new_display(area: World, tick_state: 1|2|3|4, health: Counter, oxy: Counter, phys_active, phys_tick_state: 1|2|3|4):
     tick_states = {1: "🮪", 2: "🮫", 3: "🮭", 4: "🮬"}
     ui = ""
