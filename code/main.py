@@ -65,31 +65,34 @@ def new_display(
         converted_selection.append(cvrt_row1)
         converted_selection.append(cvrt_row2)
     # actualy convert char data into the ui text
+    ui += "╔" + "═"*(len(converted_selection[0])) + "╗\n"
     for y, line in enumerate(converted_selection):
+        ui += "║"
         for x, value in enumerate(line):
             ui += f"{fmt.bgrgb(*value[1])}{fmt.fgrgb(*value[0])}{value[2]}{FRESET}"
-        ui += "\n"
+        ui += "║\n"
+    ui_topbar = "╠════╩════════╩══════════════╩══════════════╩═══════╩".replace("╩", "╦")
+    ui += ui_topbar +"═"*(len(converted_selection[0])-len(ui_topbar)+1) + "╝\n"
     # old ui
     # tick display
-    ui += f"TK{tick_states[tick_state]}  "
+    ui += f"║TK{fmt.FGGREEN}{tick_states[tick_state]}{FRESET} ║"
     # physics tick display
-    ui += f"PHYSTK{tick_states[phys_tick_state]}  "
+    ui += f"PHYSTK{[f'{fmt.FGGREEN}{tick_states[phys_tick_state]}{FRESET}' if phys_active else f'{fmt.FGRED}{tick_states[phys_tick_state]}{FRESET}'][0]} ║"
     # health
     ui += f"{fmt.FGRED}🮭🮬{FRESET} "
     ui += (
-        f"{fmt.fgrgb(189,29,11)}{fmt.bgrgb(94,14,5)}{get_bar(health.value())}{FRESET}  "
+        f"{fmt.fgrgb(189,29,11)}{fmt.bgrgb(94,14,5)}{get_bar(health.value())}{FRESET} ║"
     )
     # oxygen bar
     ui += f"{fmt.FGCYAN}O2{FRESET} "
     ui += (
-        f"{fmt.fgrgb(179,242,255)}{fmt.bgrgb(0,51,102)}{get_bar(oxy.value())}{FRESET}  "
+        f"{fmt.fgrgb(179,242,255)}{fmt.bgrgb(0,51,102)}{get_bar(oxy.value())}{FRESET} ║"
     )
     # debug stuff
-    ui += f"PHYS:{['on' if phys_active else 'off'][0]} "
-    ui += f"NOCL:{['on' if area.noclip else 'off'][0]} "
+    ui += f"NOCL:{[f'{fmt.FGGREEN}Y{FRESET}' if area.noclip else f'{fmt.FGRED}N{FRESET}'][0]} ║"
     # item UI
     ui += "\n"
-    ui += f"╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗\n"
+    ui += f"╠═══╦╩══╦═══╦═╩═╦═══╦═══╦═══╦╩══╦═══╦═══════╩═══════╝\n"
     ui += f"║🯱  ║🯲  ║🯳  ║🯴  ║🯵  ║🯶  ║🯷  ║🯸  ║🯹  ║\n"
     ui += f"║{repr_block(Stone)} ║{repr_block(Dirt)} ║{repr_block(Sand)} ║{repr_block(Grass)} ║{repr_block(Flower)} ║{repr_block(OakLog)} ║{repr_block(Leaf)} ║{repr_block(Water)} ║   ║\n"
     ui += f"╚═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╝\n".replace("╦", "╩")
@@ -126,9 +129,6 @@ health = Counter(20, 0, 20)
 oxygen = Counter(20, 0, 20)
 
 do_phys = False
-
-# new_display(wrld, tick_st.value(), health, oxygen, do_phys, phys_tk_st.value())
-# exit(1)
 
 tty.setcbreak(sys.stdin.fileno())
 
