@@ -7,6 +7,9 @@ class Flower(BaseBlock):
     background = (244,255,244)
     @staticmethod
     def char_representation():
-        return " ❀"
+        return [
+            ((255, 255, 255), (255, 255, 255), " "), ((255, 255, 255), (255, 255, 255), " "),
+            ((25,77,0), (244,255,244), "⚘"), ((25,77,0), (244,255,244), "⚘")
+        ]
     gravity_affects = False
     replaceable = True

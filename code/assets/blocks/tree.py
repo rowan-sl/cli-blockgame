@@ -8,7 +8,11 @@ class Leaf(BaseBlock):
     background = (8,59,0)
     @staticmethod
     def char_representation():
-        return "🮐🮐"
+        return [
+            ((12,89,0),(8,59,0), "🮐"), ((12,89,0),(8,59,0), "🮐"),
+            ((12,89,0),(8,59,0), "🮐"), ((12,89,0),(8,59,0), "🮐"),
+        ]
+        # return "🮐🮐"
     gravity_affects = False
     replaceable = True
 
@@ -17,4 +21,8 @@ class OakLog(ImmovableBlock):
     background = (102,70,58)
     @staticmethod
     def char_representation():
-        return "▏▕"
+        return [
+            ((61,42,35),(102,70,58), "▏"), ((61,42,35),(102,70,58), "▕"),
+            ((61,42,35),(102,70,58), "▏"), ((61,42,35),(102,70,58), "▕"),
+        ]
+        # return "▏▕"

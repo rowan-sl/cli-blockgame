@@ -13,5 +13,6 @@ class BaseBlock:
     is_block: bool = True
     
     @staticmethod
-    def char_representation() -> str:
+    def char_representation():
+        "returns a list of (forground, background, char) pairs that is 4 pairs long"
         pass

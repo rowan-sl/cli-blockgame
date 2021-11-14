@@ -6,4 +6,8 @@ class Sand(MoveableBlock):
     background = (184,126,50)
     @staticmethod
     def char_representation():
-        return "░"*2
+        return [
+            ((194,178,128),(184,126,50), "░"), ((194,178,128),(184,126,50), "░"),
+            ((194,178,128),(184,126,50), "░"), ((194,178,128),(184,126,50), "░"),
+        ]
+        # return "░"*2

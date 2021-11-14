@@ -6,4 +6,8 @@ class Dirt(ImmovableBlock):
     background = (92,46,0)
     @staticmethod
     def char_representation():
-        return "▓"*2
+        return [
+            ((80,59,28), (92,46,0), "▓"),((80,59,28), (92,46,0), "▓"),
+            ((80,59,28), (92,46,0), "▓"),((80,59,28), (92,46,0), "▓"),
+        ]
+        #return "▓"*2

@@ -6,4 +6,8 @@ class Stone(ImmovableBlock):
     background = (66,66,66)
     @staticmethod
     def char_representation():
-        return "▒"*2
+        return [
+            ((59,58,56),(66,66,66), "▒"), ((59,58,56),(66,66,66), "▒"),
+            ((59,58,56),(66,66,66), "▒"), ((59,58,56),(66,66,66), "▒"),
+        ]
+        # return "▒"*2

@@ -6,7 +6,11 @@ class Water(BaseBlock):
     background = (204,247,255)
     @staticmethod
     def char_representation():
-        return "🮐"*2
+        return [
+            ((84,187,255),(204,247,255), "🮐"), ((84,187,255),(204,247,255), "🮐"),
+            ((84,187,255),(204,247,255), "🮐"), ((84,187,255),(204,247,255), "🮐"),
+        ]
+        # return "🮐"*2
     gravity_affects = True
     replaceable = True
     self_replaceable = False

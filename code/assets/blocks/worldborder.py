@@ -11,12 +11,20 @@ class WorldBorder(BaseBlock):
     is_block: bool = True
 
     @staticmethod
-    def char_representation() -> str:
-        return "🮘"*2
+    def char_representation():
+        return [
+            ((77,166,255),(102,230,255), "🮘"), ((77,166,255),(102,230,255), "🮘"),
+            ((77,166,255),(102,230,255), "🮙"), ((77,166,255),(102,230,255), "🮙"),
+        ]
+        # return "🮘"*2
 
 class Void(Air):
     foreground = (40,40,40)
     background = (0,0,0)
     @staticmethod
-    def char_representation() -> str:
-        return "🮐"*2
+    def char_representation():
+        return [
+            ((40,40,40), (0,0,0), "🮐"), ((40,40,40), (0,0,0), "🮐"),
+            ((40,40,40), (0,0,0), "🮐"), ((40,40,40), (0,0,0), "🮐"),
+        ]
+        # return "🮐"*2
