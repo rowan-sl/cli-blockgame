@@ -1,6 +1,7 @@
 #!/usr/bin/python3.10
 import tty
 import sys
+import time
 import queue
 import threading
 from time import sleep
@@ -132,6 +133,10 @@ do_phys = False
 tty.setcbreak(sys.stdin.fileno())
 
 clear = False
+
+since_last_move = time.time()
+FALL_INTERVAL = 0.4
+
 while True:
     # tps
     sleep(1 / 10)
@@ -140,6 +145,11 @@ while True:
         if do_phys:
             phys_tk_st.increment()
             wrld.do_pysics()
+    #hacky player grav
+    if do_phys and not wrld.noclip:
+        if time.time() - since_last_move > FALL_INTERVAL:
+            wrld.move_player(0, -1)
+            since_last_move = time.time()
     # handle input
     text = ""
     try:
@@ -149,12 +159,16 @@ while True:
     match text.lower():
         case "w":
             wrld.move_player(0, 1)
+            since_last_move = time.time()
         case "s":
             wrld.move_player(0, -1)
+            since_last_move = time.time()
         case "a":
             wrld.move_player(-1, 0)
+            since_last_move = time.time()
         case "d":
             wrld.move_player(1, 0)
+            since_last_move = time.time()
         case "n":
             wrld.update_noclip(not wrld.noclip)
         case text if text in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
